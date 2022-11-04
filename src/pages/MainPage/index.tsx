@@ -1,20 +1,49 @@
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { main } from 'store/main';
 import { useAppDispatch } from 'hooks/useAppDispatch';
-import {useSelector} from "react-redux";
+import { Wrapper, Content } from './styled';
 
-const MainPage = () => {
+type Post = {
+  body: string;
+  id: number;
+  title: string;
+  userId: number;
+};
+
+interface IProps {
+  posts?: Post[];
+}
+
+const MainPage: FC<IProps> = ({ posts }) => {
   const dispatch = useAppDispatch();
-  const posts = useSelector(main.selectors.posts)
-
-  console.log(posts)
+  const tests = useSelector(main.selectors.posts);
 
   useEffect(() => {
     dispatch(main.thunks.getPosts());
   }, []);
 
-  return <div>1231</div>;
+  return (
+    <div data-testid="main-page">
+      <Wrapper data-testid="test">
+        {posts?.map((el) => (
+          <Content key={el.id}>
+            <p>ID:_{el.id}</p>
+            <p>Title:_{el.title}</p>
+            <p>USER_ID:_{el.userId}</p>
+          </Content>
+        ))}
+        {tests?.map((el) => (
+          <Content key={el.id}>
+            <p>ID:_{el.id}</p>
+            <p>Title:_{el.title}</p>
+            <p>USER_ID:_{el.userId}</p>
+          </Content>
+        ))}
+      </Wrapper>
+    </div>
+  );
 };
 
 export default MainPage;

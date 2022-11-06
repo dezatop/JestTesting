@@ -46,15 +46,19 @@ describe('Example test component JetsComponent', () => {
     jest.clearAllMocks();
   });
 
-  it('Render component', function () {
-    render(<JestComponent />);
+  it('Render component', async function () {
+    await act(async () => {
+      await render(<JestComponent />);
+    });
     expect(screen.getByTestId('component')).toHaveStyle({ color: 'blue' });
     expect(screen.getByTestId('component')).toBeInTheDocument();
     expect(screen.getByText(/test component/i)).toBeInTheDocument();
   });
 
-  it('Test hide text', () => {
-    render(<JestComponent />);
+  it('Test hide text', async () => {
+    await act(async () => {
+      await render(<JestComponent />);
+    });
     const trigger = screen.getByText(/Trigger/);
     expect(screen.queryByText(/Hide Text/)).toBeNull();
     userEvent.click(trigger);
@@ -63,16 +67,20 @@ describe('Example test component JetsComponent', () => {
     expect(screen.queryByText(/Hide Text/)).toBeNull();
   });
 
-  it('test input change', () => {
-    render(<JestComponent />);
+  it('test input change', async () => {
+    await act(async () => {
+      await render(<JestComponent />);
+    });
     const input = screen.getByTestId('input');
     expect(screen.getByPlaceholderText(/Placeholder/)).toBeInTheDocument();
     userEvent.type(input, 'qwerty');
     expect(screen.getByTestId('input')).toContainHTML('qwerty');
   });
 
-  it('Logic button click with input', () => {
-    render(<JestComponent />);
+  it('Logic button click with input', async () => {
+    await act(async () => {
+      await render(<JestComponent />);
+    });
     const input = screen.getByTestId('input');
     const trigger = screen.getByText(/Trigger/);
     expect(screen.queryByTestId('input-p')).toBeNull();

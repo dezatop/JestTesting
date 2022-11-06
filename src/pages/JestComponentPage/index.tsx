@@ -52,7 +52,7 @@ const JestComponent = () => {
           <p data-testid="input-p">Hide Text-input value: {value}</p>
         )}
         <Container>
-          {data.map((el) => (
+          {data?.map((el) => (
             <Content
               data-testid="list-item"
               key={el.id + el.title}

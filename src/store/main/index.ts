@@ -12,16 +12,25 @@ type Post = {
 
 interface IState {
   posts: Post[] | [];
+  num: number;
 }
 
 const initialState: IState = {
   posts: [],
+  num: 0,
 };
 
 const slice = createSlice({
   name: 'main',
   initialState: { ...initialState },
-  reducers: {},
+  reducers: {
+    INCREMENT_PLUS: (state, { payload }) => {
+      state.num += payload;
+    },
+    INCREMENT_MINUS: (state, { payload }) => {
+      state.num -= payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(thunks.getPosts.fulfilled, (state, { payload }) => {
       state.posts = payload;

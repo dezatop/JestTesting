@@ -1,51 +1,74 @@
-import { screen } from '@testing-library/react';
-import MainPage from 'pages/MainPage';
-import { renderWidthRedux } from '_tests/renderWidthRedux';
+import { render, screen } from '@testing-library/react';
+import axios from 'axios';
+import * as reduxHooks from 'react-redux';
 
-const dataPost = [
-  {
-    body: 'qweqe',
-    id: 2,
-    title: 'qweqweqwe',
-    userId: 4,
-  },
-];
+import MainPage from 'pages/MainPage';
+import { postData } from '__mock__/mockAssets';
+import { main } from 'store/main';
+import userEvent from '@testing-library/user-event/dist';
+
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
+}));
+
+const mockSelector = jest.spyOn(reduxHooks, 'useSelector');
+const mockDispatch = jest.spyOn(reduxHooks, 'useDispatch');
 
 describe('Component Main Page', () => {
-  it('List render', () => {
-    renderWidthRedux(<MainPage posts={dataPost} />, {
-      main: {
-        posts: [
-          {
-            body: 'qweqe',
-            id: 2,
-            title: 'qweqweqwe',
-            userId: 4,
-          },
-        ],
-      },
-    });
-    expect(screen.getByTestId('test')).toBeInTheDocument();
+  let mockStore = {
+    main: {
+      posts: postData,
+      num: 0,
+    },
+  };
+
+  beforeEach(() => {
+    mockDispatch.mockImplementation(() => jest.fn());
+    mockSelector.mockImplementation((selector) => selector(mockStore));
   });
 
-  it('render data empty', () => {
-    renderWidthRedux(<MainPage />)
-    expect(screen.queryByTestId('list')).toBeNull();
+  afterEach(() => {
+    mockDispatch.mockClear();
+    mockSelector.mockClear();
   });
 
-  it('snapshot component', () => {
-    renderWidthRedux(<MainPage posts={dataPost}/>)
-    const element = screen.getByTestId('test');
-    expect(element).toHaveStyle({ color: 'red' });
-    expect(element).toBeInTheDocument();
-    // expect(main).toMatchSnapshot();
+  it('List render', async () => {
+    const mockSelectorPost = jest.spyOn(main.selectors, 'posts');
+    const { getAllByTestId } = render(<MainPage />);
+    const list = getAllByTestId('target_list');
+
+    expect(list.length).toBe(2);
+    expect(mockSelectorPost).toBeCalledTimes(1);
   });
 
-  it('empty snapshot component', () => {
-    renderWidthRedux(<MainPage />)
-    const wrapper = screen.getByTestId('test');
-    expect(wrapper).toHaveStyle({ color: 'red' });
-    expect(wrapper).toBeInTheDocument();
-    // expect(main).toMatchSnapshot();
+  it('Check cal thunk in useEffect', async () => {
+    const mockThunks = jest.spyOn(main.thunks, 'getPosts');
+    const dispatch: any = main.thunks.getPosts;
+    mockDispatch.mockReturnValue(dispatch);
+
+    render(<MainPage />);
+    expect(mockThunks).toHaveBeenCalledTimes(2);
+  });
+
+  it('Check counter click', async () => {
+    const dispatchPlus = jest.spyOn(main.actions, 'INCREMENT_PLUS');
+    const dispatchMinus = jest.spyOn(main.actions, 'INCREMENT_MINUS');
+
+    const { getByTestId } = render(<MainPage />);
+    const plus = getByTestId('plus');
+    const minus = getByTestId('minus');
+
+    expect(plus).toBeInTheDocument();
+    expect(minus).toBeInTheDocument();
+    expect(dispatchPlus).toBeCalledTimes(0);
+
+    userEvent.click(plus);
+    expect(dispatchPlus).toBeCalledTimes(1);
+    expect(dispatchPlus).toHaveBeenCalledWith(1);
+
+    userEvent.click(minus);
+    expect(dispatchMinus).toBeCalledTimes(1);
+    expect(dispatchMinus).toHaveBeenCalledWith(2);
   });
 });

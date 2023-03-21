@@ -3,21 +3,6 @@ import MainPage from 'pages/MainPage';
 import { Link, Route, Routes } from 'react-router-dom';
 
 function App() {
-  const data = [
-    {
-      body: 'qweqe',
-      id: 2,
-      title: 'qweqweqwe',
-      userId: 4,
-    },
-    {
-      body: 'qweqwe',
-      id: 3,
-      title: 'qweqweqwe',
-      userId: 5,
-    },
-  ];
-
   return (
     <div>
       <Link
@@ -35,7 +20,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<MainPage posts={data} />}
+          element={<MainPage />}
         />
         <Route
           path="/jest"

@@ -6,7 +6,7 @@ const getPosts = createAsyncThunk('posts', async () => {
     const { data } = await api.post.getPost();
     return data;
   } catch (err) {
-    console.log(err);
+    console.log(err, '123123');
   }
 });
 

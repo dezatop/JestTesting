@@ -16,10 +16,17 @@ const JestComponent = () => {
   const [data, setData] = useState<IAxios[]>([]);
 
   const getData = async () => {
-    const res = await axios.get<IAxios[]>(
-      'https://jsonplaceholder.typicode.com/posts'
-    );
-    setData(res?.data);
+    try {
+      const res = await axios.get<IAxios[]>(
+        'https://jsonplaceholder.typicode.com/posts'
+      );
+      setData(res?.data);
+    } catch (e) {}
+  };
+
+  const triggerBtn = () => {
+    setData([]);
+    getData();
   };
 
   useEffect(() => {
@@ -29,6 +36,7 @@ const JestComponent = () => {
   return (
     <div data-testid="jest-page">
       <Wrapper data-testid="component">
+        <h1 data-testid="get_post" onClick={triggerBtn}>GET POSTS</h1>
         <div>
           <input
             data-testid="input"

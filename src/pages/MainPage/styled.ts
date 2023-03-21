@@ -1,26 +1,22 @@
 import styled from '@emotion/styled';
 
 const Wrapper = styled.ul`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   width: 100%;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 16px;
-  padding: 16px 0;
+  padding: 16px 32px;
   color: red;
 
-  &:hover {
-    li {
-      color: blue;
-    }
+  li {
+    color: blue;
+    height: 100%;
   }
 `;
 
 const Content = styled.li`
   cursor: pointer;
   display: flex;
-  width: 400px;
   border: 1px solid;
   flex-direction: column;
   justify-content: center;
@@ -31,4 +27,13 @@ const Content = styled.li`
     color: red;
   }
 `;
-export { Wrapper, Content };
+
+const Counter = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+`;
+
+export { Wrapper, Content, Counter };
